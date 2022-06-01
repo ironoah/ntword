@@ -59,7 +59,7 @@
             this.chk1.TabIndex = 2;
             this.chk1.Text = "finished";
             this.chk1.UseVisualStyleBackColor = true;
-            this.chk1.CheckedChanged += new System.EventHandler(this.chk1_CheckedChanged);
+            this.chk1.Click += new System.EventHandler(this.chk1_Click);
             // 
             // btnBack
             // 

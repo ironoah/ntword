@@ -12,7 +12,7 @@ namespace ntword
         List<EJDic> m_dic = new List<EJDic>();
         bool m_ejToggle = false;
         int m_thisIndex = -1;
-        string m_thiskey = "";
+        //string m_thiskey = "";
 
         public Form1()
         {
@@ -26,12 +26,16 @@ namespace ntword
             //m_dic["instruction"] = "指示";
             readWordListFromTsvFile();
 
-            m_thiskey = this.GetRandomKey();
-            txtWord.Text = m_thiskey;
-            txtJapanese.Text = SearchByWord(m_dic, m_thiskey);
-            SetCheck(chk1, m_dic[m_thisIndex]);
+            m_thisIndex = this.GetRandomKey();
+            txtWord.Text = m_dic[m_thisIndex].eword;
+            txtJapanese.Text = "";
+            //SetCheck(chk1, m_dic[m_thisIndex]);
+            chk1.Checked = false;
             m_ejToggle = false;
             btnBack.Enabled = false;
+
+            //debug
+            lblMessage.Text = m_dic[m_thisIndex].eword + " : " + m_dic[m_thisIndex].jdesc + " : " + m_dic[m_thisIndex].finish_flag.ToString();
         }
 
         private void SetCheck(CheckBox _chk1, EJDic eJDic)
@@ -54,24 +58,36 @@ namespace ntword
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (m_ejToggle)
+            try
             {
-                // E
-                m_thiskey = this.GetRandomKey();
-                txtWord.Text = m_thiskey;
-                txtJapanese.Text = "";
-                SetCheck(chk1, m_dic[m_thisIndex]);
-                btnBack.Enabled = false;
+                if (m_ejToggle)
+                {
+                    // E
+                    m_thisIndex = this.GetRandomKey();
+                    //m_thiskey = this.GetRandomKey();
+                    txtWord.Text = m_dic[m_thisIndex].eword;
+                    txtJapanese.Text = "";
+                    chk1.Checked = false;
+                    btnBack.Enabled = false;
+                }
+                else
+                {
+                    // J
+                    //txtJapanese.Text = m_dic[m_thiskey];
+                    //txtJapanese.Text = SearchByWord(m_dic, m_thiskey);
+                    txtJapanese.Text = m_dic[m_thisIndex].jdesc;
+                    SetCheck(chk1, m_dic[m_thisIndex]);
+                    btnBack.Enabled = true;
+                }
+                m_ejToggle = m_ejToggle ? false : true; // 反転
+                                                        //debug
+                lblMessage.Text = m_dic[m_thisIndex].eword + " : " + m_dic[m_thisIndex].jdesc + " : " + m_dic[m_thisIndex].finish_flag.ToString();
+
             }
-            else
+            catch (Exception ex)
             {
-                // J
-                //txtJapanese.Text = m_dic[m_thiskey];
-                txtJapanese.Text = SearchByWord(m_dic, m_thiskey);
-                SetCheck(chk1, m_dic[m_thisIndex]);
-                btnBack.Enabled = true;
+
             }
-            m_ejToggle = m_ejToggle ? false : true; // 反転
         }
 
         private string SearchByWord(List<EJDic> m_dic, string thiskey)
@@ -94,11 +110,13 @@ namespace ntword
             //btnBack.Enabled = false;
         }
 
-        private string GetRandomKey()
+        private int GetRandomKey()
         {
             Random rnd = new Random();
             // Generate random indexes for pet names.
-            m_thisIndex = rnd.Next(m_dic.Count);
+            var aaa = rnd.Next(m_dic.Count);
+            //MessageBox.Show(aaa.ToString());
+            return aaa;
 
             //int t = 0;
             //foreach (string s in m_dic.Keys)
@@ -107,8 +125,8 @@ namespace ntword
             //    t++;
             //}
             //            return "Nothing";
-            
-            return m_dic[m_thisIndex].eword;
+
+            //return m_dic[m_thisIndex].eword;
         }
 
         private void readWordListFromTsvFile()
@@ -141,12 +159,6 @@ namespace ntword
             }
         }
 
-        private void chk1_CheckedChanged(object sender, EventArgs e)
-        {
-            // 覚えたので
-            m_dic[m_thisIndex].finish_flag = true;
-        }
-
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             //［Ctrl］+［S］が押されたらキャッチする
@@ -167,6 +179,11 @@ namespace ntword
 
                 lblMessage.Text = "保存しました";
             }
+        }
+
+        private void chk1_Click(object sender, EventArgs e)
+        {
+            m_dic[m_thisIndex].finish_flag = true;
         }
     }
 }

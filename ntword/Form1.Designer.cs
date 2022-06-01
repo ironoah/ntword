@@ -35,6 +35,7 @@
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.txtWord = new System.Windows.Forms.TextBox();
             this.txtJapanese = new System.Windows.Forms.TextBox();
+            this.lblMessage = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnNext
@@ -112,11 +113,21 @@
             this.txtJapanese.Size = new System.Drawing.Size(772, 71);
             this.txtJapanese.TabIndex = 7;
             // 
+            // lblMessage
+            // 
+            this.lblMessage.AutoSize = true;
+            this.lblMessage.Font = new System.Drawing.Font("MS UI Gothic", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.lblMessage.Location = new System.Drawing.Point(28, 307);
+            this.lblMessage.Name = "lblMessage";
+            this.lblMessage.Size = new System.Drawing.Size(0, 21);
+            this.lblMessage.TabIndex = 8;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(835, 320);
+            this.ClientSize = new System.Drawing.Size(835, 337);
+            this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.txtJapanese);
             this.Controls.Add(this.txtWord);
             this.Controls.Add(this.radioButton2);
@@ -124,9 +135,11 @@
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.chk1);
             this.Controls.Add(this.btnNext);
+            this.KeyPreview = true;
             this.Name = "Form1";
             this.Text = "単語帳";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -141,6 +154,7 @@
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.TextBox txtWord;
         private System.Windows.Forms.TextBox txtJapanese;
+        private System.Windows.Forms.Label lblMessage;
     }
 }
 

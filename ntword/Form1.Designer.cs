@@ -36,6 +36,10 @@
             this.txtWord = new System.Windows.Forms.TextBox();
             this.txtJapanese = new System.Windows.Forms.TextBox();
             this.lblMessage = new System.Windows.Forms.Label();
+            this.btnNew = new System.Windows.Forms.Button();
+            this.btnAdd = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.btnDel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnNext
@@ -117,16 +121,65 @@
             // 
             this.lblMessage.AutoSize = true;
             this.lblMessage.Font = new System.Drawing.Font("MS UI Gothic", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.lblMessage.Location = new System.Drawing.Point(28, 307);
+            this.lblMessage.Location = new System.Drawing.Point(28, 398);
             this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(0, 21);
+            this.lblMessage.Size = new System.Drawing.Size(40, 21);
             this.lblMessage.TabIndex = 8;
+            this.lblMessage.Text = "xxx";
+            // 
+            // btnNew
+            // 
+            this.btnNew.Font = new System.Drawing.Font("MS UI Gothic", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.btnNew.Location = new System.Drawing.Point(242, 300);
+            this.btnNew.Name = "btnNew";
+            this.btnNew.Size = new System.Drawing.Size(223, 86);
+            this.btnNew.TabIndex = 9;
+            this.btnNew.Text = "NEW";
+            this.btnNew.UseVisualStyleBackColor = true;
+            this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Font = new System.Drawing.Font("MS UI Gothic", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.btnAdd.Location = new System.Drawing.Point(482, 300);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(246, 86);
+            this.btnAdd.TabIndex = 10;
+            this.btnAdd.Text = "ADD";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
+            // btnClear
+            // 
+            this.btnClear.Font = new System.Drawing.Font("MS UI Gothic", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.btnClear.Location = new System.Drawing.Point(34, 300);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(202, 86);
+            this.btnClear.TabIndex = 11;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnDel
+            // 
+            this.btnDel.Font = new System.Drawing.Font("MS UI Gothic", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.btnDel.Location = new System.Drawing.Point(734, 300);
+            this.btnDel.Name = "btnDel";
+            this.btnDel.Size = new System.Drawing.Size(246, 86);
+            this.btnDel.TabIndex = 12;
+            this.btnDel.Text = "DEL";
+            this.btnDel.UseVisualStyleBackColor = true;
+            this.btnDel.Click += new System.EventHandler(this.btnDel_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(835, 337);
+            this.ClientSize = new System.Drawing.Size(1017, 428);
+            this.Controls.Add(this.btnDel);
+            this.Controls.Add(this.btnClear);
+            this.Controls.Add(this.btnAdd);
+            this.Controls.Add(this.btnNew);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.txtJapanese);
             this.Controls.Add(this.txtWord);
@@ -155,6 +208,10 @@
         private System.Windows.Forms.TextBox txtWord;
         private System.Windows.Forms.TextBox txtJapanese;
         private System.Windows.Forms.Label lblMessage;
+        private System.Windows.Forms.Button btnNew;
+        private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnDel;
     }
 }
 

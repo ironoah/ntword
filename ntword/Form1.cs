@@ -35,6 +35,8 @@ namespace ntword
             readWordListFromTsvFile();
 
             Init();
+
+            SetButtonViewMode();
         }
 
         private void Init()
@@ -43,12 +45,12 @@ namespace ntword
             txtWord.Text = m_dic[m_thisIndex].eword;
             txtJapanese.Text = "";
             //SetCheck(chk1, m_dic[m_thisIndex]);
-            chk1.Checked = false;
+            chkFinished.Checked = false;
             m_ejToggle = false;
             btnBack.Enabled = false;
 
             //debug
-            lblMessage.Text = m_dic[m_thisIndex].eword + " : " + m_dic[m_thisIndex].jdesc + " : " + m_dic[m_thisIndex].finish_flag.ToString();
+            //lblMessage.Text = m_dic[m_thisIndex].eword + " : " + m_dic[m_thisIndex].jdesc + " : " + m_dic[m_thisIndex].finish_flag.ToString();
 
         }
         private void SetCheck(CheckBox _chk1, EJDic eJDic)
@@ -80,7 +82,7 @@ namespace ntword
                     //m_thiskey = this.GetRandomKey();
                     txtWord.Text = m_dic[m_thisIndex].eword;
                     txtJapanese.Text = "";
-                    chk1.Checked = false;
+                    chkFinished.Checked = false;
                     btnBack.Enabled = false;
                 }
                 else
@@ -89,7 +91,7 @@ namespace ntword
                     //txtJapanese.Text = m_dic[m_thiskey];
                     //txtJapanese.Text = SearchByWord(m_dic, m_thiskey);
                     txtJapanese.Text = m_dic[m_thisIndex].jdesc;
-                    SetCheck(chk1, m_dic[m_thisIndex]);
+                    SetCheck(chkFinished, m_dic[m_thisIndex]);
                     btnBack.Enabled = true;
                 }
                 m_ejToggle = m_ejToggle ? false : true; // 反転
@@ -114,6 +116,18 @@ namespace ntword
             }
 
             return "";
+        }
+        private EJDic SearchDicByWord(List<EJDic> m_dic, string thiskey)
+        {
+            foreach (var oneWord in m_dic)
+            {
+                if (oneWord.eword == thiskey)
+                {
+                    return oneWord;
+                }
+            }
+
+            return null;
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -180,51 +194,58 @@ namespace ntword
                 // 画面の情報を保存する
                 m_dic[m_thisIndex].jdesc = txtJapanese.Text;
 
-                // シリアライズ(クラスオブジェクト→jsonファイル)
-                string jsonFilePathOut = EJWORD_FILE;
-
-                //using (var stream = new MemoryStream())
-                //using (var fs = new FileStream(jsonFilePathOut, FileMode.Create))
-                //using (var sw = new StreamWriter(fs))
-                //{
-                //    var serializer = new DataContractJsonSerializer(typeof(List<EJDic>));
-                //    serializer.WriteObject(stream, m_dic);
-                //    var str2write = Encoding.UTF8.GetString(stream.ToArray());
-                //    sw.Write(str2write);
-                //}
-
-                using (var stream = new MemoryStream())
-                using (var fs = new FileStream(jsonFilePathOut, FileMode.Create))
-                using (var sw = new StreamWriter(fs))
-                {
-                    PushCulture(CultureInfo.InvariantCulture);
-
-                    try
-                    {
-                        using (var writer =
-                            JsonReaderWriterFactory.CreateJsonWriter(
-                            stream, Encoding.UTF8, true, true, "  "))
-                        {
-                            var serializer = new DataContractJsonSerializer(typeof(List<EJDic>), Settings);
-                            serializer.WriteObject(writer, m_dic);
-                            writer.Flush();
-                            var str2write = Encoding.UTF8.GetString(stream.ToArray());
-                            sw.Write(str2write);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("ObjectToJson Error (inner) : " + ex.ToString());
-                        throw;
-                    }
-                    finally
-                    {
-                        PopCulture();
-                    }
-                }
+                SaveToFile();
 
                 lblMessage.Text = "保存しました";
+
             }
+        }
+
+        private void SaveToFile()
+        {
+            // シリアライズ(クラスオブジェクト→jsonファイル)
+            string jsonFilePathOut = EJWORD_FILE;
+
+            //using (var stream = new MemoryStream())
+            //using (var fs = new FileStream(jsonFilePathOut, FileMode.Create))
+            //using (var sw = new StreamWriter(fs))
+            //{
+            //    var serializer = new DataContractJsonSerializer(typeof(List<EJDic>));
+            //    serializer.WriteObject(stream, m_dic);
+            //    var str2write = Encoding.UTF8.GetString(stream.ToArray());
+            //    sw.Write(str2write);
+            //}
+
+            using (var stream = new MemoryStream())
+            using (var fs = new FileStream(jsonFilePathOut, FileMode.Create))
+            using (var sw = new StreamWriter(fs))
+            {
+                PushCulture(CultureInfo.InvariantCulture);
+
+                try
+                {
+                    using (var writer =
+                        JsonReaderWriterFactory.CreateJsonWriter(
+                        stream, Encoding.UTF8, true, true, "  "))
+                    {
+                        var serializer = new DataContractJsonSerializer(typeof(List<EJDic>), Settings);
+                        serializer.WriteObject(writer, m_dic);
+                        writer.Flush();
+                        var str2write = Encoding.UTF8.GetString(stream.ToArray());
+                        sw.Write(str2write);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ObjectToJson Error (inner) : " + ex.ToString());
+                    throw;
+                }
+                finally
+                {
+                    PopCulture();
+                }
+            }
+
         }
 
         private void chk1_Click(object sender, EventArgs e)
@@ -236,9 +257,12 @@ namespace ntword
         {
             txtWord.Text = "";
             txtJapanese.Text = "";
-            chk1.Checked = false;
+            chkFinished.Checked = false;
 
+            txtWord.Enabled = true;
+            txtJapanese.Enabled = true;
             btnAdd.Enabled = true;
+            txtWord.Select();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -251,18 +275,30 @@ namespace ntword
             // 既に存在している場合は終了
             if(SearchByWord(m_dic, txtWord.Text) != "")
             {
-                MessageBox.Show("This word already exists.");
-                return;
+                // 更新
+                //MessageBox.Show("This word already exists.");
+                //return;
+                m_dic[m_thisIndex].jdesc = txtJapanese.Text;
+                m_dic[m_thisIndex].finish_flag = chkFinished.Checked;
+            }
+            else
+            {
+                // 新規登録
+                m_dic.Add(new EJDic { eword = txtWord.Text, jdesc = txtJapanese.Text, finish_flag = false });
             }
 
-            m_dic.Add(new EJDic { eword=txtWord.Text, jdesc=txtJapanese.Text, finish_flag=false});
+            SaveToFile();
 
             txtWord.Text = "";
             txtJapanese.Text = "";
-            chk1.Checked = false;
+            //txtWord.Enabled = false;
+            //txtJapanese.Enabled = false;
+            chkFinished.Checked = false;
 
+            lblMessage.Text = "新しい単語を登録／更新しました";
             btnAdd.Enabled = false;
-            lblMessage.Text = "新しい単語を登録しました";
+
+            btnNew.Select();
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -287,6 +323,8 @@ namespace ntword
                 //「はい」が選択された時
                 //Console.WriteLine("「はい」が選択されました");
                 m_dic.RemoveAt(m_thisIndex);
+
+                SaveToFile();
 
                 Init();
             }
@@ -330,6 +368,54 @@ namespace ntword
                 throw new ApplicationException("PopCulture : double popped!");
             Thread.CurrentThread.CurrentCulture = _cultureStorage;
             _cultureStorage = null;
+        }
+
+        private void radioModeView_CheckedChanged(object sender, EventArgs e)
+        {
+            SetButtonViewMode();
+        }
+
+        private void SetButtonViewMode()
+        {
+            btnBack.Enabled = true;
+            btnNext.Enabled = true;
+            btnSearch.Enabled = false;
+            btnNew.Enabled = false;
+            btnAdd.Enabled = false;
+            btnDel.Enabled = false;
+            btnClear.Enabled = false;
+
+        }
+        private void radioModeEdit_CheckedChanged(object sender, EventArgs e)
+        {
+            btnBack.Enabled = false;
+            btnNext.Enabled = false;
+            btnSearch.Enabled = true;
+            btnNew.Enabled = true;
+            btnAdd.Enabled = true;
+            btnDel.Enabled = true;
+            btnClear.Enabled = true;
+
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            if (txtWord.Text == "")
+            {
+                MessageBox.Show("English is Empty.");
+                return;
+            }
+
+            var oneDic = SearchDicByWord(m_dic, txtWord.Text);
+            if(oneDic == null)
+            {
+                MessageBox.Show("English is Nothing.");
+                return;
+            }
+
+            txtJapanese.Text = oneDic.jdesc;
+            chkFinished.Checked = oneDic.finish_flag;
+
         }
     }
 }
